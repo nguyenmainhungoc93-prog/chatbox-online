@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Chatbox Nhận Diện Nguy Hiểm Online – Mobile</title>
+<style>
+  body{
+    margin:0; background:#eef2f7; font-family:Arial, sans-serif;
+    display:flex; justify-content:center; align-items:center;
+    height:100vh;
+  }
+  .chat-wrap{
+    width:100%; max-width:430px; height:95vh;
+    background:#fff; border-radius:14px;
+    box-shadow:0 6px 20px rgba(0,0,0,0.15);
+    display:flex; flex-direction:column; overflow:hidden;
+  }
+  .chat-header{
+    background:#1976d2; color:#fff; padding:14px;
+    text-align:center; font-weight:bold; font-size:18px;
+  }
+  .chat-box{
+    flex:1; overflow-y:auto; padding:12px;
+    background:#f8fafc;
+  }
+  .bot,.user{
+    padding:10px 12px; border-radius:10px;
+    max-width:80%; margin-bottom:10px; line-height:1.4;
+    white-space:pre-wrap;
+  }
+  .bot{background:#e3f2fd; align-self:flex-start;}
+  .user{background:#c8e6c9; align-self:flex-end;}
+  .input-area{
+    display:flex; padding:10px; gap:8px; background:#fff;
+    border-top:1px solid #ddd;
+  }
+  #userInput{
+    flex:1; padding:10px; border-radius:8px; border:1px solid #ccc;
+  }
+  button{
+    padding:10px 14px; background:#1976d2; color:#fff; border:none;
+    border-radius:8px; font-weight:bold;
+  }
+  .risk-score{
+    font-size:13px; background:#fff3cd; color:#7c5a00;
+    padding:4px 8px; border-radius:6px; margin-top:4px;
+  }
+  mark{background:#ffcccc; padding:2px; border-radius:4px;}
+</style>
+</head>
+<body>
+<div class="chat-wrap">
+  <div class="chat-header">Chatbot – Nhận Diện Nguy Hiểm Online</div>
+  <div id="chatBox" class="chat-box"></div>
+
+  <div class="input-area">
+    <input id="userInput" type="text" placeholder="Nhập tình huống..." />
+    <button onclick="sendMsg()">Gửi</button>
+</div>
+<button style="margin:10px; padding:10px; width:90%; border:none; border-radius:8px; background:#0b72cc; color:#fff; font-weight:bold;" onclick="randomScenario()">🎯 Tạo tình huống ngẫu nhiên</button>
+</div>
+
+<script>
+function addUser(t){ let d=document.createElement('div'); d.className='user'; d.innerHTML=t; chatBox.appendChild(d); chatBox.scrollTop=999999; }
+function addBot(t){ let d=document.createElement('div'); d.className='bot'; d.innerHTML=t; chatBox.appendChild(d); chatBox.scrollTop=999999; }
+
+function highlight(text, keys){ let r=text; keys.forEach(k=>{ let rg=new RegExp(k,'gi'); r=r.replace(rg,`<mark>${k}</mark>`); }); return r; }
+
+const maps=[
+ {k:['gặp','hẹn gặp','gặp mặt'],cat:'meet'},
+ {k:['ảnh riêng','gửi ảnh','ảnh nhạy'],cat:'photos'},
+ {k:['địa chỉ','sđt','số điện thoại','trường'],cat:'info'},
+ {k:['nạp thẻ','chuyển tiền','momo'],cat:'money'},
+ {k:['quà','trúng thưởng'],cat:'gift'},
+ {k:['otp','mã xác'],cat:'otp'},
+ {k:['đe doạ','bắt cóc'],cat:'kidnap'},
+];
+
+const reply={
+ meet:"Không gặp người lạ ngoài đời nhé!",
+ photos:"Không gửi ảnh riêng tư cho bất kỳ ai.",
+ info:"Không chia sẻ thông tin cá nhân!",
+ money:"Không nạp thẻ hay chuyển tiền!",
+ gift:"Quà miễn phí online thường là bẫy.",
+ otp:"Không chia sẻ mã OTP!",
+ kidnap:"Dừng ngay và báo người lớn!",
+ unknown:"Bạn mô tả rõ hơn giúp mình nhé."
+};
+
+function score(cat){ const lvl={meet:7,photos:6,info:8,money:6,gift:5,otp:9,kidnap:10,unknown:2}; return lvl[cat]||1; }
+
+function analyze(m){ m=m.toLowerCase(); let cat='unknown', keys=[];
+  maps.forEach(mp=>{ mp.k.forEach(k=>{ if(m.includes(k)){ cat=mp.cat; keys.push(k);} });});
+  return{cat, keys, reply:reply[cat], risk:score(cat)};
+}
+
+let totalScore = 0;
+let answerCount = 0;
+
+function sendMsg(){ const t=userInput.value.trim(); if(!t)return;
+  addUser(t); userInput.value='';
+  const r=analyze(t);
+  addBot(`${r.reply}<br>👉 Từ khóa: ${highlight(t,r.keys)}<br><span class='risk-score'>Mức nguy hiểm: ${r.risk}/10</span>`);
+  totalScore += r.risk;
+  answerCount++;}<br>👉 Từ khóa: ${highlight(t,r.keys)}<br><span class='risk-score'>Mức nguy hiểm: ${r.risk}/10</span>`);
+}
+
+addBot('Xin chào! Hãy nhập tình huống để mình phân tích nhé.');
+
+// Tạo tình huống ngẫu nhiên
+const sampleScenarios = [
+  "Một người lạ yêu cầu em gửi ảnh riêng tư.",
+  "Bạn online rủ em gặp ngoài quán cafe.",
+  "Em nhận được link nhận quà iPhone 15.",
+  "Một người tự xưng là thầy giáo xin mã OTP.",
+  "Ai đó đe dọa sẽ bắt cóc nếu em không trả lời.",
+  "Họ xin địa chỉ nhà để gửi quà.",
+  "Người lạ bảo em chuyển tiền để nhận học bổng.",
+  "Một tài khoản lạ muốn biết trường và lớp của em.",
+  "Bạn online kêu em bật camera để xác minh.",
+  "Một người lạ nhờ em nạp thẻ hộ vì đang gấp.",
+  "Một người nhấn mạnh rằng em phải giữ bí mật cuộc trò chuyện.",
+  "Họ bảo em xoá lịch sử chat sau khi nói chuyện.",
+  "Một người lạ xin lịch trình đi học – giờ tan học.",
+  "Ai đó gửi file .apk bảo em cài để nhận quà.",
+  "Một tài khoản lạ hỏi em đang ở đâu lúc này.",
+  "Người quen online xin mật khẩu tài khoản game.",
+  "Một người dặn em đừng nói với ba mẹ về cuộc trò chuyện này.",
+  "Em nhận được email yêu cầu đăng nhập để tránh bị khóa tài khoản.",
+  "Một người dùng avatar trẻ em nhưng nói chuyện như người lớn.",
+  "Ai đó kêu em ra đầu ngõ nhận quà do họ gửi tặng."
+];
+
+function randomScenario(){
+  const s = sampleScenarios[Math.floor(Math.random()*sampleScenarios.length)];
+  addBot("📌 Tình huống ngẫu nhiên:<br>" + s);
+}
+</script>
+<button style="margin:10px; padding:10px; width:90%; background:#ff9800; color:#fff; border:none; border-radius:8px; font-weight:bold;" onclick="showSummary()">📊 Xem tổng kết cuối buổi</button>
+
+<script>
+function showSummary(){
+  const avg = answerCount ? (totalScore / answerCount).toFixed(1) : 0;
+  addBot(`📊 <b>Tổng kết cuối buổi</b><br>• Số tình huống đã xử lý: ${answerCount}<br>• Điểm nguy hiểm trung bình: ${avg}/10<br>• Nhận xét: ${avg > 7 ? '⚠️ Mức nguy hiểm cao – cần cẩn trọng hơn!' : avg > 4 ? '🔎 Mức nguy hiểm trung bình – bạn xử lý khá tốt!' : '✅ Mức nguy hiểm thấp – bạn có kỹ năng phòng tránh tốt!'}`);
+}
+</script>
+</body>
+</html>
