@@ -1,125 +1,52 @@
 <!DOCTYPE html>
-<html lang="vi">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Chatbox Nhận diện Bắt cóc Online</title>
-
+<html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chatbox</title>
 <style>
-body {
-    margin: 0;
-    background: #fff7e1;
-    font-family: Arial, sans-serif;
-}
-#app {
-    max-width: 480px;
-    margin: auto;
-    height: 100vh;
-    background: white;
-    display: flex;
-    flex-direction: column;
-    border-left: 1px solid #ffce8c;
-    border-right: 1px solid #ffce8c;
-}
-header {
-    background:#ffce8c;
-    padding:15px;
-    text-align:center;
-    font-weight:bold;
-}
-#messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 15px;
-}
-.msg {
-    max-width: 80%;
-    margin-bottom: 12px;
-    padding: 10px;
-    border-radius: 10px;
-}
-.bot {
-    background: #ffe5b4;
-    align-self: flex-start;
-}
-.user {
-    background: #fff3d1;
-    align-self: flex-end;
-}
-#input-area {
-    padding: 10px;
-    background: #fafafa;
-    border-top: 1px solid #ccc;
-    display: flex;
-    gap: 8px;
-}
-#text {
-    flex: 1;
-    padding: 10px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-}
-button {
-    background: #d48806;
-    color: white;
-    border: none;
-    padding: 10px 14px;
-    border-radius: 6px;
-}
-</style>
-</head>
-
+body{margin:0;background:#fff7e1;font-family:Arial}
+#app{max-width:480px;margin:auto;height:100vh;background:white;display:flex;flex-direction:column;border-left:1px solid #ffce8c;border-right:1px solid #ffce8c}
+header{background:#ffce8c;padding:15px;text-align:center;font-weight:bold}
+#messages{flex:1;overflow-y:auto;padding:15px}
+.msg{max-width:80%;margin-bottom:12px;padding:10px;border-radius:10px}
+.bot{background:#ffe5b4;align-self:flex-start}
+.user{background:#fff3d1;align-self:flex-end}
+#input-area{padding:10px;background:#fafafa;border-top:1px solid #ccc;display:flex;gap:8px}
+#text{flex:1;padding:10px;border-radius:6px;border:1px solid #ccc}
+button{background:#d48806;color:white;border:none;padding:10px 14px;border-radius:6px}
+</style></head>
 <body>
 <div id="app">
-    <header>🛡️ Chatbox An Toàn Online</header>
-
-    <div id="messages">
-        <div class="msg bot">Chào bạn 👋! Hãy nhập bất kỳ tin nhắn đáng ngờ, tôi sẽ giúp bạn nhận diện.</div>
-    </div>
-
-    <div id="input-area">
-        <input id="text" type="text" placeholder="Nhập tin nhắn..." />
-        <button onclick="send()">Gửi</button>
-    </div>
-</div>
+<header>🛡️ Chatbox An Toàn Online</header>
+<div id="messages"><div class="msg bot">Chào bạn 👋! Hãy nhập bất kỳ tin nhắn đáng ngờ.</div></div>
+<div id="input-area">
+<button onclick="randomScenario()" style="background:#ffa031;padding:10px 12px;border-radius:6px;font-size:13px">🎲</button>
+<input id="text" type="text" placeholder="Nhập phản hồi...">
+<button onclick="send()">Gửi</button>
+</div></div>
 
 <script>
-const patterns = [
-    { regex: /ảnh|mặt mộc|gửi ảnh|hình/i, reply: "⚠️ Không gửi ảnh/video cá nhân cho bất kỳ ai online!" },
-    { regex: /otp|mã|xác minh/i, reply: "⚠️ Không cung cấp mã OTP/dãy số bảo mật – kể cả người quen!" },
-    { regex: /link|bấm/i, reply: "⚠️ Cảnh báo: Link lạ có thể chứa virus hoặc lừa đảo!" },
-    { regex: /gặp|ra cổng|quán net|gần trường/i, reply: "⚠️ Không gặp bất kỳ ai quen online ngoài đời!" },
-    { regex: /chuyển tiền|nạp|thẻ/i, reply: "⚠️ Không nạp thẻ hoặc chuyển tiền cho người lạ!" },
-    { regex: /học bổng|việc làm|đóng phí/i, reply: "⚠️ Không có học bổng thật nào yêu cầu đóng phí trước!" },
-    { regex: /đe dọa|tống tiền|đăng lên/i, reply: "⚠️ Bình tĩnh – lưu bằng chứng và báo người lớn ngay!" }
+const scenarios=["Anh đứng ngoài cổng, ra gặp anh 5 phút thôi.","Em gửi ảnh mặt mộc để xác nhận nhận quà nha.","Bấm link này để xem ai nói xấu em.","Nạp hộ anh 100K, anh chuyển lại 300K.","Anh là nhân viên ngân hàng, tài khoản em đang bị hack."];
+function randomScenario(){addMsg("🎲 Tình huống: "+scenarios[Math.floor(Math.random()*scenarios.length)],"bot");}
+
+const dangerReplies=[
+{regex:/ảnh|mặt mộc|gửi ảnh/i,replies:["⚠️ Không gửi ảnh cá nhân.","⚠️ Cẩn thận deepfake.","⚠️ Đây là dấu hiệu nguy hiểm."]},
+{regex:/otp|mã|xác minh/i,replies:["⚠️ Không cung cấp mã OTP.","⚠️ OTP chỉ dành cho bạn.","⚠️ Rất dễ bị chiếm tài khoản."]},
+{regex:/link|bấm|click/i,replies:["⚠️ Không bấm link lạ.","⚠️ Link có thể chứa virus.","⚠️ Kiểm tra nguồn chính thức."]}
 ];
 
-function send() {
-    const input = document.getElementById("text");
-    const value = input.value.trim();
-    if (!value) return;
-
-    addMsg(value, "user");
-    input.value = "";
-
-    setTimeout(() => {
-        let found = patterns.find(p => p.regex.test(value));
-        if (!found)
-            addMsg("🤔 Tạm thời không phát hiện nguy hiểm, nhưng bạn vẫn nên cảnh giác!", "bot");
-        else
-            addMsg(found.reply, "bot");
-    }, 500);
+function send(){
+ let input=document.getElementById("text"),v=input.value.trim();if(!v)return;
+ addMsg(v,"user");input.value="";
+ setTimeout(()=>{
+   let found=null;
+   for(let p of dangerReplies){if(p.regex.test(v)){found=p;break;}}
+   if(!found)addMsg("🤔 Chưa phát hiện nguy hiểm rõ ràng.","bot");
+   else addMsg(found.replies[Math.floor(Math.random()*found.replies.length)],"bot");
+ },400);
 }
 
-function addMsg(text, type) {
-    const box = document.getElementById("messages");
-    let div = document.createElement("div");
-    div.className = "msg " + type;
-    div.textContent = text;
-    box.appendChild(div);
-    box.scrollTop = box.scrollHeight;
+function addMsg(t,type){
+ let box=document.getElementById("messages"),d=document.createElement("div");
+ d.className="msg "+type;d.textContent=t;box.appendChild(d);box.scrollTop=box.scrollHeight;
 }
 </script>
-
-</body>
-</html>
+</body></html>
