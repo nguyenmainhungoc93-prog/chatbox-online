@@ -10,13 +10,15 @@ header{background:#ffce8c;padding:15px;text-align:center;font-weight:bold}
 .bot{background:#ffe5b4;align-self:flex-start}
 .user{background:#fff3d1;align-self:flex-end}
 #input-area{padding:10px;background:#fafafa;border-top:1px solid #ccc;display:flex;gap:8px}
-#text{flex:1;padding:10px;border-radius:6px;border:1px solid #ccc}
+#text{flex:1;padding:10px;border-radius:6px;border:1px solid:#ccc}
 button{background:#d48806;color:white;border:none;padding:10px 14px;border-radius:6px}
 </style></head>
+
 <body>
 <div id="app">
 <header>🛡️ Chatbox An Toàn Online</header>
-<div id="messages"><div class="msg bot">Chào bạn 👋! Hãy nhập bất kỳ tin nhắn đáng ngờ.</div></div>
+<div id="messages"><div class="msg bot">Chào bạn 👋! Bấm 🎲 để tạo tình huống hoặc nhập tin nhắn.</div></div>
+
 <div id="input-area">
 <button onclick="randomScenario()" style="background:#ffa031;padding:10px 12px;border-radius:6px;font-size:13px">🎲</button>
 <input id="text" type="text" placeholder="Nhập phản hồi...">
@@ -24,29 +26,32 @@ button{background:#d48806;color:white;border:none;padding:10px 14px;border-radiu
 </div></div>
 
 <script>
-const scenarios=["Anh đứng ngoài cổng, ra gặp anh 5 phút thôi.","Em gửi ảnh mặt mộc để xác nhận nhận quà nha.","Bấm link này để xem ai nói xấu em.","Nạp hộ anh 100K, anh chuyển lại 300K.","Anh là nhân viên ngân hàng, tài khoản em đang bị hack."];
-function randomScenario(){addMsg("🎲 Tình huống: "+scenarios[Math.floor(Math.random()*scenarios.length)],"bot");}
+// scenarios
+const scenarios=[...Array(40).keys()].map(i=>"Tình huống nguy hiểm số "+(i+1));
+function randomScenario(){addMsg("🎲 "+scenarios[Math.floor(Math.random()*scenarios.length)],"bot");}
 
+// multi-response patterns
 const dangerReplies=[
-{regex:/ảnh|mặt mộc|gửi ảnh/i,replies:["⚠️ Không gửi ảnh cá nhân.","⚠️ Cẩn thận deepfake.","⚠️ Đây là dấu hiệu nguy hiểm."]},
-{regex:/otp|mã|xác minh/i,replies:["⚠️ Không cung cấp mã OTP.","⚠️ OTP chỉ dành cho bạn.","⚠️ Rất dễ bị chiếm tài khoản."]},
-{regex:/link|bấm|click/i,replies:["⚠️ Không bấm link lạ.","⚠️ Link có thể chứa virus.","⚠️ Kiểm tra nguồn chính thức."]}
+{regex:/ảnh|mặt mộc|gửi ảnh|hình|camera/i,replies:["⚠ Không gửi ảnh cá nhân.","⚠ Cẩn thận deepfake.","⚠ Xin ảnh = nguy hiểm."]},
+{regex:/otp|mã|xác minh|6 số/i,replies:["⚠ Không cung cấp OTP.","⚠ OTP bị lộ = mất tài khoản.","⚠ Rất dễ bị hack."]},
+{regex:/link|bấm|click/i,replies:["⚠ Không bấm link lạ.","⚠ Có thể chứa virus.","⚠ Kiểm tra nguồn trước."]},
+{regex:/gặp|ra cổng|ngoài cổng|quán net/i,replies:["⚠ Không gặp người lạ.","⚠ Chiêu dụ gặp mặt.","⚠ Báo người lớn ngay."]}
 ];
 
 function send(){
- let input=document.getElementById("text"),v=input.value.trim();if(!v)return;
- addMsg(v,"user");input.value="";
- setTimeout(()=>{
-   let found=null;
-   for(let p of dangerReplies){if(p.regex.test(v)){found=p;break;}}
-   if(!found)addMsg("🤔 Chưa phát hiện nguy hiểm rõ ràng.","bot");
-   else addMsg(found.replies[Math.floor(Math.random()*found.replies.length)],"bot");
- },400);
+let t=document.getElementById("text"),v=t.value.trim();if(!v)return;
+addMsg(v,"user");t.value="";
+setTimeout(()=>{
+ let f=null;
+ for(let p of dangerReplies){if(p.regex.test(v)){f=p;break;}}
+ if(!f)addMsg("🤔 Không thấy nguy hiểm rõ.","bot");
+ else addMsg(f.replies[Math.floor(Math.random()*f.replies.length)],"bot");
+},400);
 }
 
-function addMsg(t,type){
- let box=document.getElementById("messages"),d=document.createElement("div");
- d.className="msg "+type;d.textContent=t;box.appendChild(d);box.scrollTop=box.scrollHeight;
+function addMsg(txt,type){
+let box=document.getElementById("messages");
+let d=document.createElement("div");d.className="msg "+type;d.textContent=txt;
+box.appendChild(d);box.scrollTop=box.scrollHeight;
 }
-</script>
-</body></html>
+</script></body></html>
